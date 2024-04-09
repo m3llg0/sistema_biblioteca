@@ -1,4 +1,12 @@
-from biblioteca import Biblioteca
+from conexao import connect
+from biblioteca import inserir
+from biblioteca import atualizar
+from biblioteca import listar
+from biblioteca import deletar
+from biblioteca import emprestar
+from biblioteca import devolver
+
+mydb = connect()
 
 while True:
     print("Bem vindo à Biblioteca!")
@@ -18,22 +26,30 @@ while True:
         break
 
     elif opcao == "1":
-        Biblioteca.inserir()
+        id_livro01 = int(input('Digite o id do livro: '))
+        t01 = str(input('Digite o título do livro: '))
+        a01 = str(input('Digite o autor do livro: '))
+        ano01 = int(input('Digite o ano de publicação do livro: '))
+        st01 = 'Disponível'
+        inserir(mydb, id_livro01, t01, a01, ano01, st01)
 
     elif opcao == "2":
-        Biblioteca.atualizar()
+        atualizar(mydb)
 
     elif opcao == "3":
-        Biblioteca.emprestar()
+        id_livro01 = int(input('Digite o id do livro: '))
+        emprestar(mydb, id_livro01)
 
     elif opcao == "4":
-        Biblioteca.listar()
+        listar(mydb)
     
     elif opcao == "5":
-        Biblioteca.devolver()
+        id_livro01 = int(input('Digite o id do livro: '))
+        devolver(mydb, id_livro01)
 
     elif opcao == "6":
-        Biblioteca.deletar
+        id_livro01 = int(input('Digite o id do livro: '))
+        deletar(mydb, id_livro01)
     
     else:
         print("Opção inválida! Por favor, tente novamente!")
