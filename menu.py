@@ -1,14 +1,15 @@
 from conexao import connect
-from biblioteca import inserir
-from biblioteca import atualizar
-from biblioteca import listar
-from biblioteca import deletar
-from biblioteca import emprestar
-from biblioteca import devolver
+from Biblioteca import inserir
+from Biblioteca import atualizar
+from Biblioteca import listar
+from Biblioteca import deletar
+from Biblioteca import emprestar
+from Biblioteca import devolver
 
 mydb = connect()
 
 while True:
+    print(" ")
     print("Bem vindo à Biblioteca!")
     print(" ")
     print("1. Adicionar um livro")
@@ -21,6 +22,7 @@ while True:
     print(" ")
 
     opcao = input("Escolha uma opção: ")
+    print(" ")
 
     if opcao == '7':
         break

@@ -6,6 +6,6 @@ def connect():
         host="localhost",
         user="root",
         password="",
-        database="sistema.biblioteca"
+        database="sistema_biblioteca"
     )
     return mydb

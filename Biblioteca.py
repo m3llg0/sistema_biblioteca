@@ -3,15 +3,14 @@ from conexao import connect
 
 def inserir(mydb, id_livro, titulo, autor, ano_pub, status):
     mycursor = mydb.cursor()
-    sql = "INSERT INTO livros (titulo, autor, ano_pub, status, id_livro) VALUES (%s, %s, %s, %s, %s)"
-    val = (titulo, autor, ano_pub, status, id_livro)
+    sql = "INSERT INTO livros (id_livro, titulo, autor, ano_pub, status) VALUES (%s, %s, %s, %s, %s)"
+    val = (id_livro, titulo, autor, ano_pub, status)
     mycursor.execute(sql, val)
     mydb.commit()
     print(mycursor.rowcount, "Inserido com Sucesso.")
     mycursor.close()
 
 def atualizar(mydb):
-    mycursor = mydb.cursor()
     print('')
     print('Atualizando: ')
     print('1. Atualizar título')
@@ -22,23 +21,26 @@ def atualizar(mydb):
     print('')
 
     if op == '4':
-        id01 = int(input('Digite o id do livro desejado: '))
-        t01 = str(input('Digite o novo titulo: '))
-        a01 = str(input('Digite o novo autor: '))
-        ap01 = int(input('Digite o novo ano de publicação: '))
+       mycursor = mydb.cursor()
+       id01 = int(input('Digite o id do livro desejado: '))
+       t01 = str(input('Digite o novo título: '))
+       a01 = str(input('Digite o novo autor: '))
+       ano01 = str(input('Digite o novo ano de publicação: '))
 
-        sql = "UPDATE livros SET titulo=?, autor=?, ano_pub=? WHERE id=?"
-        val = (t01, a01, ap01, id01)
+       sql = "UPDATE livros SET titulo=%s, autor=%s, ano_pub=%s WHERE id_livro=%s"
+       val = (t01, a01, ano01, id01)
+       
+       mycursor.execute(sql, val)
+       mydb.commit()
+       print(mycursor.rowcount, "Atualizado com Sucesso.")
+       mycursor.close()
 
-        mycursor.execute(sql, val)
-        mydb.conn.commit()
-        print(mycursor.rowcount, "Atualizado com Sucesso.")
-        mycursor.close()
     elif op == '1':
+        mycursor = mydb.cursor()
         id01 = int(input('Digite o id do livro desejado: '))
-        t01 = str(input('Digite o novo nome: '))
+        t01 = str(input('Digite o novo título: '))
 
-        sql = "UPDATE livros SET titulo=? WHERE id=?"
+        sql = "UPDATE livros SET titulo=%s WHERE id_livro=%s"
         val = (t01, id01)
 
         mycursor.execute(sql, val)
@@ -47,45 +49,72 @@ def atualizar(mydb):
         mycursor.close()
 
     elif op == '2':
+        mycursor = mydb.cursor()
         id01 = int(input('Digite o id do livro desejado: '))
         a01 = str(input('Digite o novo autor: '))
 
-        sql = "UPDATE livros SET autor=? WHERE id=?"
-        val = (a01,id01)
+        sql = "UPDATE livros SET autor=%s WHERE id_livro=%s"
+        val = (a01, id01)
 
         mycursor.execute(sql, val)
-        mydb.conn.commit()
+        mydb.commit()
         print(mycursor.rowcount, "Atualizado com Sucesso.")
         mycursor.close()
         
     elif op == '3':
-        id01 = int(input('Digite o id do livro desejado: '))
-        ap01 = int(input('Digite o novo ano de publicação: '))
+       mycursor = mydb.cursor()
+       id01 = int(input('Digite o id do livro desejado: '))
+       ano01 = int(input('Digite o novo ano de publicação: '))
 
-        sql = "UPDATE livros SET ano_pub=? WHERE id=?"
-        val = (ap01, id01)
+       sql = "UPDATE livros SET ano_pub=%s WHERE id_livro=%s"
+       val = (ano01, id01)
 
-        mycursor.execute(sql, val)
-        mydb.conn.commit()
-        print(mycursor.rowcount, "Atualizado com Sucesso.")
-        mycursor.close()
+       mycursor.execute(sql, val)
+       mydb.commit()
+       print(mycursor.rowcount, "Atualizado com Sucesso.")
+       mycursor.close()
 
-def listar(self):
-    mycursor = self.cursor()
-    self.cursor.execute('''SELECT * FROM livros''')
-    return self.cursor.fetchall()
+def listar(mydb):
+    mycursor = mydb.cursor()
+
+    sql = "SELECT * FROM livros"
+
+    mycursor.execute(sql)
+    resultado = mycursor.fetchall()
+    print(resultado)
     mycursor.close()
 
-def deletar(self, livro_id):
-    self.cursor.execute('''DELETE FROM livros WHERE id=?''', (livro_id,))
-    self.conn.commit()
-
-def emprestar(self, livro_id):
-    self.cursor.execute('''UPDATE livros SET disponivel=? WHERE id=?''',
-                        (False, livro_id))
-    self.conn.commit()
+def deletar(mydb, id_livro):
+    mycursor = mydb.cursor()
     
-def devolver(self, livro_id):
-    self.cursor.execute('''UPDATE livros SET disponivel=? WHERE id=?''',
-                        (True, livro_id))
-    self.conn.commit()
+    sql = "DELETE FROM livros WHERE id_livro=%s"
+    val = (id_livro,)
+       
+    mycursor.execute(sql, val)
+    mydb.commit()
+    print(mycursor.rowcount, "Livro deletado.")
+    mycursor.close()
+
+def emprestar(mydb, id_livro):
+    mycursor = mydb.cursor()
+    status = 'Emprestado'
+    
+    sql = "UPDATE livros SET status=%s WHERE id_livro=%s"
+    val = (status, id_livro)
+       
+    mycursor.execute(sql, val)
+    mydb.commit()
+    print(mycursor.rowcount, "Livro emprestado.")
+    mycursor.close()
+    
+def devolver(mydb, id_livro):
+    mycursor = mydb.cursor()
+    status = 'Disponível'
+    
+    sql = "UPDATE livros SET status=%s WHERE id_livro=%s"
+    val = (status, id_livro)
+       
+    mycursor.execute(sql, val)
+    mydb.commit()
+    print(mycursor.rowcount, "Livro devolvido.")
+    mycursor.close()
