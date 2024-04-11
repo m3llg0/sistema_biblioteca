@@ -1,39 +1,30 @@
-import sqlite3
 import hashlib
 from conexao import connect
+
 mydb = connect()
 
-conn = sqlite3.connect('biblioteca.db')
-cursor = conn.cursor()
 
-cursor.execute('''CREATE TABLE IF NOT EXISTS usuarios (
-                    id INTEGER PRIMARY KEY,
-                    nome TEXT NOT NULL,
-                    email TEXT NOT NULL,
-                    senha TEXT NOT NULL,
-                    cpf TEXT NOT NULL
-                )''')
+def cadastrar_usuario(mydb, id_cliente, nome, email, senha, cpf):
+    mycursor = mydb.cursor()
+    sql = "INSERT INTO cadastro (id_cliente, nome, email, senha, cpf) VALUES (%s, %s, %s, %s, %s)"
+    val = (id_cliente, nome, email, senha, cpf)
+    mycursor.execute(sql, val)
+    mydb.commit()
+    print(mycursor.rowcount, "Usuário cadastrado com sucesso!")
+    mycursor.close()
 
-conn.commit()
+def fazer_login(mydb, email, senha):
+    mycursor = mydb.cursor()
+    sql = "SELECT * FROM cadastro WHERE email=%s AND senha=%s"
+    val = (email, senha)
+    mycursor.execute(sql, val)
 
-def cadastrar_usuario(nome, email, senha, cpf):
-    senha_hash = hashlib.sha256(senha.encode()).hexdigest()
-    cursor.execute('INSERT INTO usuarios (nome, email, senha, cpf) VALUES (?, ?, ?, ?)', (nome, email, senha_hash, cpf))
-    conn.commit()
-    print("Usuário cadastrado com sucesso!")
-
-def fazer_login(email, senha):
-    senha_hash = hashlib.sha256(senha.encode()).hexdigest()
-    cursor.execute('SELECT * FROM usuarios WHERE email = ? AND senha = ?', (email, senha_hash))
-    usuario = cursor.fetchone()
-    
+    usuario = mycursor.fetchone()
     if usuario:
         print("Login bem-sucedido!")
+        return usuario
     else:
         print("E-mail ou senha incorretos.")
+        return None
 
-cadastrar_usuario("Emilly Marrocos", "emilly@example.com", "senha123", "123.456.789-00")
-fazer_login("emilly@example.com", "senha123")
-fazer_login("emilly@example.com", "senha456")
-
-conn.close()
+    mycursor.close()

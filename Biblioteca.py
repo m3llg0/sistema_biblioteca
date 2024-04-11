@@ -1,5 +1,7 @@
 from conexao import connect
 
+mydb = connect()
+
 
 def inserir(mydb, id_livro, titulo, autor, ano_pub, status):
     mycursor = mydb.cursor()
